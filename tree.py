@@ -20,8 +20,20 @@ class Node():
         elif item > self.data:
             self.right.insert(item)
 
+    def insert_by_key(self, item, keyname):
+        if self.data is None:
+            self.data = item
+        elif self.left is None and getattr(item, keyname) <= getattr(self.data, keyname):
+            self.left = Node(item)
+        elif self.right is None and getattr(item, keyname) > getattr(self.data, keyname):
+            self.right = Node(item)
+        elif getattr(item, keyname) <= getattr(self.data, keyname):
+            self.left.insert(item)
+        elif getattr(item, keyname) > getattr(self.data, keyname):
+            self.right.insert(item)
+
     def print_tree(self):
-        print self
+        print self.data
         if self.left is not None:
             self.left.print_tree()
         if self.right is not None:
