@@ -4,6 +4,7 @@
 from collections import namedtuple
 from tree import Node
 from knapsack_sort import ks_sort
+from dynamic_table import dynamic_table
 Item = namedtuple("Item", ['index', 'value', 'weight', 'vwratio'])
 
 # easy access to data in repl
@@ -30,15 +31,11 @@ def solve_it(input_data):
     firstLine = lines[0].split()
     item_count = int(firstLine[0])
     capacity = int(firstLine[1])
+    table = dynamic_table()
 
     print "# Items : ", str(item_count)
     print "Capacity : ", str(capacity)
     print "--------------------------"
-
-    basic_root = Node()
-    vw_root = Node()
-    mixed_root = Node()
-    ksort = ks_sort()
 
     items = []
 
@@ -49,51 +46,25 @@ def solve_it(input_data):
         weight = int(parts[1])
         items.append(Item(i-1, val, weight, float(float(val) / float(weight))))
 
-    ratio_items = ksort.vw_ratio_desc(items)
-
     # a trivial greedy algorithm for filling the knapsack
     # it takes items in-order until the knapsack is full
-    basic_value = 0
-    basic_weight = 0
-    basic_taken = [0]*len(items)
-
-    for item in items:
-        basic_root.insert(item.value)
-        if basic_weight + item.weight <= capacity:
-            basic_taken[item.index] = 1
-            basic_value += item.value
-            basic_weight += item.weight
-    #### End basic ####
-
     value = 0
     weight = 0
     taken = [0]*len(items)
 
-    for item in ratio_items:
-        vw_root.insert_by_key(item, 'vwratio')
-
     for item in items:
-        mixed_root.insert_by_key(item, 'vwratio')
+    #    root.insert(item.value)
+        if weight + item.weight <= capacity:
+            taken[item.index] = 1
+            value += item.value
+            weight += item.weight
+    #### End basic ####
 
-    print "BASIC"
-    print "----------------"
-    basic_root.print_tree()
-    print "depth : ",str(basic_root.max_depth())
-    print "----------------"
-    print "Value / Weight Ratio"
-    print "----------------"
-    vw_root.print_tree()
-    print "depth : ",str(vw_root.max_depth())
-    print "----------------"
-    print "Mixed"
-    print "----------------"
-    mixed_root.print_tree()
-    print "depth : ",str(mixed_root.max_depth())
-    print "----------------"
+    table.calculate_solutions(items, capacity)
     
     # prepare the solution in the specified output format
-    output_data = str(basic_value) + ' ' + str(0) + '\n'
-    output_data += ' '.join(map(str, basic_taken))
+    output_data = str(value) + ' ' + str(0) + '\n'
+    output_data += ' '.join(map(str, taken))
     return output_data
 
 import sys
