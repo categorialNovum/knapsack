@@ -3,7 +3,9 @@
 
 from collections import namedtuple
 from tree import Node
-from knapsack_sort import ks_sort
+from knapsack_tools import ks_sort
+from knapsack_tools import estimates
+from knapsack_tools import depth_first_search
 from dynamic_table import dynamic_table
 Item = namedtuple("Item", ['index', 'value', 'weight', 'vwratio'])
 
@@ -33,6 +35,8 @@ def solve_it(input_data):
     capacity = int(firstLine[1])
     table = dynamic_table()
     sorter = ks_sort()
+    est = estimates()
+    dfs = depth_first_search()
 
     print "# Items : ", str(item_count)
     print "Capacity : ", str(capacity)
@@ -60,13 +64,15 @@ def solve_it(input_data):
             weight += item.weight
     #### End basic ####
 
-    root = Node()
-    ratio_items = sorter.vw_ratio_desc(items)
-    estimate = sorter.optimistic_estimate_presorted(ratio_items,capacity)
-    #print ratio_items
-    print "--------------------------"
-    print "Estimate : ", str(estimate)
-    print "--------------------------"
+    dfs.search(items,capacity)
+
+    #root = Node()
+    #ratio_items = sorter.vw_ratio_desc(items)
+    #estimate = est.optimistic_estimate_presorted(ratio_items,capacity)
+    #print root
+    #print "--------------------------"
+    #print "Estimate : ", str(estimate)
+    #print "--------------------------"
     
 
 #    for item in ratio_items:
