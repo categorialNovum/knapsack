@@ -32,6 +32,7 @@ def solve_it(input_data):
     item_count = int(firstLine[0])
     capacity = int(firstLine[1])
     table = dynamic_table()
+    sorter = ks_sort()
 
     print "# Items : ", str(item_count)
     print "Capacity : ", str(capacity)
@@ -53,12 +54,28 @@ def solve_it(input_data):
     taken = [0]*len(items)
 
     for item in items:
-    #    root.insert(item.value)
         if weight + item.weight <= capacity:
             taken[item.index] = 1
             value += item.value
             weight += item.weight
     #### End basic ####
+
+    root = Node()
+    ratio_items = sorter.vw_ratio_desc(items)
+    estimate = sorter.optimistic_estimate_presorted(ratio_items,capacity)
+    #print ratio_items
+    print "--------------------------"
+    print "Estimate : ", str(estimate)
+    print "--------------------------"
+    
+
+#    for item in ratio_items:
+#        root.insert_by_key(item, "vwratio")
+
+#    root.print_tree()
+#    print "--------------------------"
+#    print "Depth : ",str(root.max_depth())
+#    print "--------------------------"
 
     table.calculate_solutions(items, capacity)
     

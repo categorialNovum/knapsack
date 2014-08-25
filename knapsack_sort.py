@@ -19,3 +19,18 @@ class ks_sort():
 
     def vw_ratio_desc(self,items):
         return sorted(items, key=attrgetter('vwratio'), reverse=True)
+
+    def optimistic_estimate_presorted(self,items,capacity):
+        idx = 0
+        estimate = 0
+        while capacity > 0:
+            if items[idx].weight <= capacity:
+                estimate += items[idx].value
+                capacity -= items[idx].weight
+                idx += 1
+            else:
+                partial_addition = int((capacity / float(items[idx].weight)) * items[idx].value)
+                estimate += partial_addition
+                capacity = 0
+
+        return estimate
