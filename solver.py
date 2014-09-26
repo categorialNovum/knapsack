@@ -66,26 +66,11 @@ def solve_it(input_data):
 
     dfs.search(items,capacity)
 
-    #root = Node()
-    #ratio_items = sorter.vw_ratio_desc(items)
-    #estimate = est.optimistic_estimate_presorted(ratio_items,capacity)
-    #print root
-    #print "--------------------------"
-    #print "Estimate : ", str(estimate)
-    #print "--------------------------"
-    
-
-#    for item in ratio_items:
-#        root.insert_by_key(item, "vwratio")
-
-#    root.print_tree()
-#    print "--------------------------"
-#    print "Depth : ",str(root.max_depth())
-#    print "--------------------------"
-
-    table.calculate_solutions(items, capacity)
+################### TABLE SOLUTION #############################
+#    table.calculate_solutions(items, capacity)
     
     # prepare the solution in the specified output format
+    print "---------------------------------------------"
     output_data = str(value) + ' ' + str(0) + '\n'
     output_data += ' '.join(map(str, taken))
     return output_data

@@ -14,14 +14,20 @@ class Node():
         s = "level : " + str(self.level) + ", value : " + str(self.value) + ", capacity : " + str(self.capacity) + ", estimate : " + str(self.estimate)
         return s
 
-    def take_item(self, item, path):
-        if not path:
-            self.left = Node(self.level + 1, self.value + item.value, self.capacity - item.weight, self.estimate)
-            return
-        elif path[0] == 1:
-            self.left.take_item(item,path[1:])
-        elif path[0] == 0:
-            self.right.take_item(item,path[1:])
+#    def take_item(self, item, path):
+#        if not path:
+#            self.left = Node(self.level + 1, self.value + item.value, self.capacity - item.weight, self.estimate)
+#            return
+#        elif path[0] == 1:
+#            self.left.take_item(item,path[1:])
+#        elif path[0] == 0:
+#            self.right.take_item(item,path[1:])
+
+    def take_item(self, item, est):
+        self.left = Node(self.level + 1, self.value + item.value, self.capacity - item.weight, est)
+
+    def drop_item(self, item, est):
+        self.right = Node(self.level +1, self.value, self.capacity, est)
 
     def insert(self, item):
         if self.data is None:
