@@ -67,13 +67,16 @@ class estimates():
 
 class depth_first_search():
     def search(self,items,capacity):
+        n_items = len(items)
         sorter = ks_sort()
         est = estimates()
         sorted_items = sorter.vw_ratio_desc(items)
         estimate = est.optimistic_estimate_presorted(sorted_items, capacity)
         root = Node(0,0,capacity,estimate)
         node = root
-        path = []
+        best_profit = -1
+        best_path = []
+        working_path = []
         done = False
         print "---------------------------------"
         print "Root ---> " + str(node)
@@ -83,25 +86,27 @@ class depth_first_search():
             for i,item in enumerate(sorted_items):
                 estimate_take = est.optimistic_estimate_take(sorted_items[i:], node.capacity)
                 estimate_drop = est.optimistic_estimate_drop(sorted_items[i:], node.capacity)
-                print i
+                print 'i : ',i
                 print item
                 print 'capacity : ', node.capacity
                 print 'value : ',node.value
-                print 'take : ',estimate_take
-                print 'drop : ',estimate_drop
-                if item.weight <= node.capacity and estimate_take > estimate_drop:
+                print 'level : ', node.level
+#                print 'take : ',estimate_take
+#                print 'drop : ',estimate_drop
+                #if item.weight <= node.capacity and estimate_take > estimate_drop:
+                if item.weight <= node.capacity: 
                     print "taking item"
                     node.take_item(item,estimate_take)
                     node = node.left
-                    path.append(1)
+                    working_path.append(1)
                 else:
                     print "droping item"
                     node.drop_item(item,estimate_drop)
                     node = node.right
-                    path.append(0)
-                if capacity <= 0:
-                    break
+                    working_path.append(0)
                 print "-----------------"
             done = True
-        print path
+        print "-----------------"
+        print working_path
+        print "-----------------"
         root.print_tree()

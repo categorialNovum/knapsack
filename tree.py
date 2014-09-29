@@ -1,8 +1,9 @@
 import string
 
 class Node():
-    def __init__(self,level=0,value=0, capacity=0, estimate=0):
+    def __init__(self,level=0,value=0, capacity=0, estimate=0, parent = None):
 #        self.data = data
+        self.parent = parent
         self.left = None
         self.right = None
         self.level = level
@@ -24,10 +25,10 @@ class Node():
 #            self.right.take_item(item,path[1:])
 
     def take_item(self, item, est):
-        self.left = Node(self.level + 1, self.value + item.value, self.capacity - item.weight, est)
+        self.left = Node(self.level + 1, self.value + item.value, self.capacity - item.weight, est, self)
 
     def drop_item(self, item, est):
-        self.right = Node(self.level +1, self.value, self.capacity, est)
+        self.right = Node(self.level +1, self.value, self.capacity, est, self)
 
     def insert(self, item):
         if self.data is None:
