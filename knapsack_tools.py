@@ -66,26 +66,60 @@ class estimates():
         return estimate
 
 class depth_first_search():
-    def search(self,items,capacity):
-        n_items = len(items)
-        sorter = ks_sort()
+    def __init__(self, items, capacity):
+        self.items = items
+        self.capacity = capacity
+        self.n = len(items)
+        self.sorted_items = ks_sort().vw_ratio_desc(items)
+        self.bestPath = [self.n]
+        self.workingPath = [self.n]
+        self.bestProfit = -1
+        self.currentProfit
+        self.currentWeight
+        self.newProfit
+        self.newWeight
+        self.level
+
+    def __bound(self, currentProfit, currentWeight, currentLevel):
+        boundFound = False
+        boundVal = -1
+        newProfit = currentProfit
+        newWeight = currentWeight
+        boundLevel = currentLevel + 1
+        while (level < self.n and not boundFound):
+            # item fits, put it in current solution
+            if newWeight + self.items[level].weight <= self.capacity:
+                newWeight += items[level].weight
+                newProfit += items[level].value
+                self.workingPath[boundLevel] = 1
+            #item only fits partially, we've hit a boundary. Compute upper bound.
+            else:
+                boundVal = newProfit + (self.capacity - newWeight) * items[boundLevel].profit / items[boundLevel].weight
+                boundFound = True
+
+            if (boundFound):
+                #we've hit a wall, try with an item further up the tree
+                boundLevel -= 1
+                return boundVal
+            else
+                #profit includes last item
+                return newProfit
+
+    def search(self):
         est = estimates()
-        sorted_items = sorter.vw_ratio_desc(items)
-        estimate = est.optimistic_estimate_presorted(sorted_items, capacity)
-        root = Node(0,0,capacity,estimate)
+        estimate = est.optimistic_estimate_presorted(self.sorted_items, self.capacity)
+        root = Node(0,0,self.capacity,estimate)
         node = root
         best_profit = -1
-        best_path = []
-        working_path = []
         done = False
         print "---------------------------------"
         print "Root ---> " + str(node)
-        print sorted_items
+        print self.sorted_items
         print "---------------------------------"
         while not done:
-            for i,item in enumerate(sorted_items):
-                estimate_take = est.optimistic_estimate_take(sorted_items[i:], node.capacity)
-                estimate_drop = est.optimistic_estimate_drop(sorted_items[i:], node.capacity)
+            for i,item in enumerate(self.sorted_items):
+                estimate_take = est.optimistic_estimate_take(self.sorted_items[i:], node.capacity)
+                estimate_drop = est.optimistic_estimate_drop(self.sorted_items[i:], node.capacity)
                 print 'i : ',i
                 print item
                 print 'capacity : ', node.capacity

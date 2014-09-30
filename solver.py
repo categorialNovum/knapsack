@@ -36,7 +36,6 @@ def solve_it(input_data):
     table = dynamic_table()
     sorter = ks_sort()
     est = estimates()
-    dfs = depth_first_search()
 
     print "# Items : ", str(item_count)
     print "Capacity : ", str(capacity)
@@ -64,7 +63,8 @@ def solve_it(input_data):
             weight += item.weight
     #### End basic ####
 
-    dfs.search(items,capacity)
+    dfs = depth_first_search(items,capacity)
+    dfs.search()
 
 ################### TABLE SOLUTION #############################
 #    table.calculate_solutions(items, capacity)

@@ -1,4 +1,5 @@
-public void knapsack() { int n= items.length; // Number of items in problem 
+public void knapsack() { 
+int n= items.length; // Number of items in problem 
 do { // While upper bound < known soln,backtrack
 	while (bound() <= solutionProfit) { 
 		while (k != 0 && y[k] != 1) // Back up while item k not in sack 
@@ -12,7 +13,7 @@ do { // While upper bound < known soln,backtrack
 	currWgt= newWgt; // Reach here if bound> soln profit 
 	currProfit= newProfit; // and we may have new soln. 
 	k= partItem; // Set tree level k to last, possibly partial item in greedy solution
-partial item in greedy solution
+
 	if (k == n) { 				// If we’ve reached leaf node, have 
 		solutionProfit= currProfit; // actual soln, not just bound 
 		System.arraycopy(y, 0, x, 0, y.length); 	// Copy soln into array x 
