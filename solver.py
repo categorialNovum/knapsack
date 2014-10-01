@@ -67,7 +67,7 @@ def solve_it(input_data):
     dfs.search()
 
 ################### TABLE SOLUTION #############################
-#    table.calculate_solutions(items, capacity)
+    table.calculate_solutions(items, capacity)
     
     # prepare the solution in the specified output format
     print "---------------------------------------------"

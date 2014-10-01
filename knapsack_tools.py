@@ -66,81 +66,102 @@ class estimates():
         return estimate
 
 class depth_first_search():
-    def __init__(self, items, capacity):
-        self.items = items
+    def __init__(self, items, capacity, bp=-1, cp=0, cw=0, np=0, nw=0, klvl=0, blvl=0):
+        self.items = ks_sort().vw_ratio_desc(items)
         self.capacity = capacity
         self.n = len(items)
-        self.sorted_items = ks_sort().vw_ratio_desc(items)
         self.bestPath = [self.n]
-        self.workingPath = [self.n]
-        self.bestProfit = -1
-        self.currentProfit
-        self.currentWeight
-        self.newProfit
-        self.newWeight
-        self.level
+        self.workingPath = [0]*self.n
+        self.bestProfit = bp
+        self.currentProfit = cp
+        self.currentWeight = cw
+        self.newProfit = np
+        self.newWeight = nw
+        self.ksLevel = klvl
+        self.boundLevel = blvl
 
-    def __bound(self, currentProfit, currentWeight, currentLevel):
-        boundFound = False
-        boundVal = -1
-        newProfit = currentProfit
-        newWeight = currentWeight
-        boundLevel = currentLevel + 1
-        while (level < self.n and not boundFound):
-            # item fits, put it in current solution
-            if newWeight + self.items[level].weight <= self.capacity:
-                newWeight += items[level].weight
-                newProfit += items[level].value
-                self.workingPath[boundLevel] = 1
-            #item only fits partially, we've hit a boundary. Compute upper bound.
-            else:
-                boundVal = newProfit + (self.capacity - newWeight) * items[boundLevel].profit / items[boundLevel].weight
-                boundFound = True
-
-            if (boundFound):
-                #we've hit a wall, try with an item further up the tree
-                boundLevel -= 1
-                return boundVal
-            else
-                #profit includes last item
-                return newProfit
+    def printStats(self):
+        print '-----------------------------------'
+        print 'capcity : ', self.capacity
+        print 'workingPath : ', self.workingPath
+        print 'bestProfit : ', self.bestProfit
+        print 'currentProfit : ', self.currentProfit
+        print 'currentWeight : ', self.currentWeight
+        print 'newProfit : ', self.newProfit
+        print 'newWeight : ', self.newWeight
+        print 'ksLevel : ', self.ksLevel
+        print 'boundLevel : ', self.boundLevel
+        print '-----------------------------------'
+        
 
     def search(self):
+        def bound():
+            boundFound = False
+            boundVal = -1
+            self.newProfit = self.currentProfit
+            self.newWeight = self.currentWeight
+            self.boundLevel = self.ksLevel + 1
+            # backtrack until the upper bound is less than the best solution we have
+            while (self.boundLevel < self.n and not boundFound):
+                # item fits, put it in current solution
+                if self.newWeight + self.items[self.boundLevel].weight <= self.capacity:
+                    print 'adding ', self.items[self.boundLevel]
+                    self.newWeight += self.items[self.boundLevel].weight
+                    self.newProfit += self.items[self.boundLevel].value
+                    self.workingPath[self.boundLevel] = 1
+                #item only fits partially, we've hit a boundary. Compute upper bound.
+                else:
+                    boundVal = self.newProfit + (self.capacity - self.newWeight) * self.items[self.boundLevel].value / self.items[self.boundLevel].weight
+                    boundFound = True
+
+                self.boundLevel += 1
+            if (boundFound):
+                #we've hit a wall, try with an item further up the tree
+                print "wall hit, partial solution : ", boundVal
+                self.boundLevel -= 1
+                return boundVal
+            else:
+                print "bound solution hit"
+                #profit includes last item
+                return self.newProfit
+
         est = estimates()
-        estimate = est.optimistic_estimate_presorted(self.sorted_items, self.capacity)
+        estimate = est.optimistic_estimate_presorted(self.items, self.capacity)
         root = Node(0,0,self.capacity,estimate)
         node = root
         best_profit = -1
         done = False
         print "---------------------------------"
         print "Root ---> " + str(node)
-        print self.sorted_items
+        print self.items
         print "---------------------------------"
         while not done:
-            for i,item in enumerate(self.sorted_items):
-                estimate_take = est.optimistic_estimate_take(self.sorted_items[i:], node.capacity)
-                estimate_drop = est.optimistic_estimate_drop(self.sorted_items[i:], node.capacity)
-                print 'i : ',i
-                print item
-                print 'capacity : ', node.capacity
-                print 'value : ',node.value
-                print 'level : ', node.level
-#                print 'take : ',estimate_take
-#                print 'drop : ',estimate_drop
-                #if item.weight <= node.capacity and estimate_take > estimate_drop:
-                if item.weight <= node.capacity: 
-                    print "taking item"
-                    node.take_item(item,estimate_take)
-                    node = node.left
-                    working_path.append(1)
+            self.printStats()
+            while bound() <= self.bestProfit:
+                #backtrack while item is not in sack
+                while self.ksLevel != 0 and self.workingPath[self.ksLevel] != 1:
+                    print 'backtracking'
+                    self.ksLevel -= 1
+                if self.ksLevel == 0:
+                    done = True
+                    #return
                 else:
-                    print "droping item"
-                    node.drop_item(item,estimate_drop)
-                    node = node.right
-                    working_path.append(0)
-                print "-----------------"
-            done = True
-        print "-----------------"
-        print working_path
-        print "-----------------"
-        root.print_tree()
+                    self.workingPath[self.ksLevel] = 0 # take item out of solution -> branch right
+                    self.currentWeight -= self.items[self.ksLevel].weight 
+                    self.currentProfit -= self.items[self.ksLevel].value
+
+            self.currentWeight = self.newWeight
+            self.currentProfit = self.newProfit
+            self.ksLevel = self.boundLevel
+
+            if (self.ksLevel == self.n):
+                self.bestProfit = self.currentProfit
+                self.bestPath = self.workingPath
+                self.ksLevel = self.n -1 
+            else:
+                self.workingPath[self.ksLevel] = 0
+
+        print "--------------------------------"
+        print 'DFS BEST PROFIT : ', self.bestProfit
+        print "--------------------------------"
+
